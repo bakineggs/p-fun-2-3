@@ -62,6 +62,18 @@ describe Relation do
         ]
       ].include?(r.bcnf_decomposition.sort_by(&:attributes)).should be_true
     end
+
+    it 'will refuse to not preserve dependencies if you tell it to' do
+      r = Relation.new ['A', 'B', 'C'], {['A'] => ['C'], ['B'] => ['C']}
+      lambda {
+        r.bcnf_decomposition(true)
+      }.should raise_error(DependencyPreservationError)
+
+      r = Relation.new ['A', 'B', 'C'], {['A'] => ['C'], ['A'] => ['B']}
+      lambda {
+        r.bcnf_decomposition(true)
+      }.should_not raise_error
+    end
   end
 
   describe '#==' do

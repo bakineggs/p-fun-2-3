@@ -11,7 +11,7 @@ class Relation
     end
   end
 
-  def bcnf_decomposition
+  def bcnf_decomposition preserve_dependencies = false
     return [self] unless violates_bcnf?
 
     attrs = functional_dependency_set.closure(@bcnf_violating_fd.determinant)
@@ -34,4 +34,7 @@ class Relation
     return false unless other.is_a?(Relation)
     attributes == other.attributes && functional_dependency_set == other.functional_dependency_set
   end
+end
+
+class DependencyPreservationError < StandardError
 end
