@@ -40,6 +40,15 @@ describe Relation do
         Relation.new(['A', 'C'])
       ]
     end
+
+    it 'should decompose derived relations as well' do
+      r = Relation.new ['A', 'B', 'C', 'D'], {['A'] => ['B'], ['C'] => ['D']}
+      r.bcnf_decomposition.sort_by(&:attributes).should == [
+        Relation.new(['A', 'B'], {['A'] => ['B']}),
+        Relation.new(['C', 'D'], {['C'] => ['D']}),
+        Relation.new(['A', 'C'])
+      ].sort_by(&:attributes)
+    end
   end
 
   describe '#==' do

@@ -16,13 +16,13 @@ class Relation
 
     attrs = functional_dependency_set.closure(@bcnf_violating_fd.determinant)
     fds = functional_dependency_set.related_to(attrs)
-    r1 = Relation.new attrs, fds
+    r1 = Relation.new(attrs, fds).bcnf_decomposition
 
     attrs = (attributes - attrs + @bcnf_violating_fd.determinant).sort.uniq
     fds = functional_dependency_set.related_to(attrs)
-    r2 = Relation.new attrs, fds
+    r2 = Relation.new(attrs, fds).bcnf_decomposition
 
-    [r1, r2]
+    r1 + r2
   end
 
   def violates_bcnf?
