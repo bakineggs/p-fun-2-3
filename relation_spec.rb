@@ -33,7 +33,7 @@ describe Relation do
   describe '#bcnf_decomposition' do
     it 'is a set of derived relations with the determinants of any relevant functional dependencies being keys' do end
 
-    it 'should split up a relation with a functional dependency and an independent attribute' do
+    it 'splits up a relation with a functional dependency and an independent attribute' do
       r = Relation.new ['A', 'B', 'C'], {['A'] => ['B']}
       r.bcnf_decomposition.should == [
         Relation.new(['A', 'B'], {['A'] => ['B']}),
@@ -41,13 +41,26 @@ describe Relation do
       ]
     end
 
-    it 'should decompose derived relations as well' do
+    it 'decomposes derived relations as well' do
       r = Relation.new ['A', 'B', 'C', 'D'], {['A'] => ['B'], ['C'] => ['D']}
       r.bcnf_decomposition.sort_by(&:attributes).should == [
         Relation.new(['A', 'B'], {['A'] => ['B']}),
-        Relation.new(['C', 'D'], {['C'] => ['D']}),
-        Relation.new(['A', 'C'])
-      ].sort_by(&:attributes)
+        Relation.new(['A', 'C']),
+        Relation.new(['C', 'D'], {['C'] => ['D']})
+      ]
+    end
+
+    it 'does not preserve dependencies by default' do
+      r = Relation.new ['A', 'B', 'C'], {['A'] => ['C'], ['B'] => ['C']}
+      [
+        [
+          Relation.new(['A', 'B']),
+          Relation.new(['A', 'C'], {['A'] => ['C']})
+        ], [
+          Relation.new(['A', 'B']),
+          Relation.new(['B', 'C'], {['B'] => ['C']})
+        ]
+      ].include?(r.bcnf_decomposition.sort_by(&:attributes)).should be_true
     end
   end
 
