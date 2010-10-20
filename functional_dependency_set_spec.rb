@@ -5,26 +5,20 @@ describe FunctionalDependencySet do
   describe '#new' do
     it 'takes a hash of functional dependencies' do
       FunctionalDependencySet.new({
-        'AB' => 'CD',
-        'C' => 'E'
+        ['A', 'B'] => ['C', 'D'],
+        ['C'] => ['E']
       }).functional_dependencies.should == [
-        FunctionalDependency.new('AB', 'CD'),
-        FunctionalDependency.new('C', 'E')
+        FunctionalDependency.new(['A', 'B'], ['C', 'D']),
+        FunctionalDependency.new(['C'], ['E'])
       ]
     end
 
     it 'does not understand duplicated determinants' do
       FunctionalDependencySet.new({
-        'A' => 'B',
-        'B' => 'C',
-        'A' => 'C'
+        ['A'] => ['B'],
+        ['B'] => ['C'],
+        ['A'] => ['C']
       }).functional_dependencies.length.should == 2
-    end
-
-    it 'only allows capital letters in functional dependencies' do
-      lambda {
-        FunctionalDependencySet.new({'Ab' => 'CD'})
-      }.should raise_error(ArgumentError)
     end
   end
 
@@ -33,32 +27,32 @@ describe FunctionalDependencySet do
 
     before :each do
       @set = FunctionalDependencySet.new({
-        'A' => 'B',
-        'BC' => 'D',
-        'DE' => 'FG'
+        ['A'] => ['B'],
+        ['B', 'C'] => ['D'],
+        ['D', 'E'] => ['F', 'G']
       })
     end
 
     it 'always includes the attributes themselves' do
-      @set.closure('FG').should == 'FG'
+      @set.closure(['F', 'G']).should == ['F', 'G']
     end
 
     it 'includes directly determined attributes' do
-      @set.closure('A').should == 'AB'
+      @set.closure(['A']).should == ['A', 'B']
     end
 
     it 'includes deductively determined attributes' do
-      @set.closure('AC').should == 'ABCD'
-      @set.closure('ACE').should == 'ABCDEFG'
+      @set.closure(['A', 'C']).should == ['A', 'B', 'C', 'D']
+      @set.closure(['A', 'C', 'E']).should == ['A', 'B', 'C', 'D', 'E', 'F', 'G']
     end
   end
 
   describe '#==' do
     it 'determines equality based on functional dependencies' do
-      set = FunctionalDependencySet.new({'A' => 'B', 'BC' => 'D'})
-      set.should == FunctionalDependencySet.new({'A' => 'B', 'BC' => 'D'})
-      set.should_not == FunctionalDependencySet.new({'AC' => 'B', 'BC' => 'D'})
-      set.should_not == FunctionalDependencySet.new({'A' => 'BC', 'BC' => 'D'})
+      set = FunctionalDependencySet.new({['A'] => ['B'], ['B', 'C'] => ['D']})
+      set.should == FunctionalDependencySet.new({['A'] => ['B'], ['B', 'C'] => ['D']})
+      set.should_not == FunctionalDependencySet.new({['A', 'C'] => ['B'], ['B', 'C'] => ['D']})
+      set.should_not == FunctionalDependencySet.new({['A'] => ['B', 'C'], ['B', 'C'] => ['D']})
     end
   end
 end

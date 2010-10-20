@@ -10,7 +10,7 @@ class FunctionalDependencySet
   end
 
   def closure attributes
-    closure = attributes.chars.sort.uniq
+    closure = attributes.sort.uniq
 
     old = nil
     until old == closure
@@ -22,12 +22,12 @@ class FunctionalDependencySet
       end
     end
 
-    closure.join('')
+    closure
   end
 
   def bcnf_violating_fd attributes
     functional_dependencies.each do |fd|
-      if closure(fd.determinant.join('')).chars.to_a & attributes != attributes
+      if closure(fd.determinant) & attributes != attributes
         return fd
       end
     end
@@ -39,7 +39,7 @@ class FunctionalDependencySet
     fds = functional_dependencies.select do |fd|
       fd.determinant + fd.dependent - attributes == []
     end.map do |fd|
-      [fd.determinant.join(''), fd.dependent.join('')]
+      [fd.determinant, fd.dependent]
     end
   end
 
