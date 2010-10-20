@@ -52,4 +52,13 @@ describe FunctionalDependencySet do
       @set.closure('ACE').should == 'ABCDEFG'
     end
   end
+
+  describe '#==' do
+    it 'determines equality based on functional dependencies' do
+      set = FunctionalDependencySet.new({'A' => 'B', 'BC' => 'D'})
+      set.should == FunctionalDependencySet.new({'A' => 'B', 'BC' => 'D'})
+      set.should_not == FunctionalDependencySet.new({'AC' => 'B', 'BC' => 'D'})
+      set.should_not == FunctionalDependencySet.new({'A' => 'BC', 'BC' => 'D'})
+    end
+  end
 end

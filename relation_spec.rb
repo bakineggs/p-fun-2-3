@@ -20,5 +20,36 @@ describe Relation do
         FunctionalDependency.new('C', 'D')
       ]
     end
+
+    it 'does not allow functional dependencies related to non-attributes' do
+      lambda {
+        r = Relation.new 'ABCD', {'A' => 'B', 'C' => 'E'}
+      }.should raise_error(ArgumentError)
+
+      lambda {
+        r = Relation.new 'ABCD', {'A' => 'B', 'E' => 'D'}
+      }.should raise_error(ArgumentError)
+    end
+  end
+
+  describe '#bcnf_decomposition' do
+    it 'is a set of derived relations with the determinants of any relevant functional dependencies being keys' do end
+
+    it 'should split up a relation with a functional dependency and an independent attribute' do
+      r = Relation.new 'ABC', {'A' => 'B'}
+      r.bcnf_decomposition.should == [
+        Relation.new('AB', {'A' => 'B'}),
+        Relation.new('AC')
+      ]
+    end
+  end
+
+  describe '#==' do
+    it 'determines equality based on attributes and functional dependencies' do
+      r = Relation.new 'ABC', {'A' => 'B'}
+      r.should == Relation.new('ABC', {'A' => 'B'})
+      r.should_not == Relation.new('ABCD', {'A' => 'B'})
+      r.should_not == Relation.new('ABC', {'A' => 'C'})
+    end
   end
 end
