@@ -27,4 +27,29 @@ describe FunctionalDependencySet do
       }.should raise_error(ArgumentError)
     end
   end
+
+  describe '#closure' do
+    it 'is the set of attributes functionally determined by the given attributes' do end
+
+    before :each do
+      @set = FunctionalDependencySet.new({
+        'A' => 'B',
+        'BC' => 'D',
+        'DE' => 'FG'
+      })
+    end
+
+    it 'always includes the attributes themselves' do
+      @set.closure('FG').should == 'FG'
+    end
+
+    it 'includes directly determined attributes' do
+      @set.closure('A').should == 'AB'
+    end
+
+    it 'includes deductively determined attributes' do
+      @set.closure('AC').should == 'ABCD'
+      @set.closure('ACE').should == 'ABCDEFG'
+    end
+  end
 end
