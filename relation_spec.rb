@@ -74,6 +74,10 @@ describe Relation do
         r.bcnf_decomposition(true)
       }.should_not raise_error
     end
+
+    it 'decomposes a functional dependency that preserve dependencies if possible' do
+      pending
+    end
   end
 
   describe '#==' do
