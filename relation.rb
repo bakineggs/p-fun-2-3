@@ -1,3 +1,5 @@
+require 'functional_dependency_set'
+
 class Relation
   attr_reader :attributes, :functional_dependency_set
 
@@ -15,12 +17,16 @@ class Relation
     return [self] unless violates_bcnf?
 
     attrs = functional_dependency_set.closure(@bcnf_violating_fd.determinant)
-    fds = functional_dependency_set.related_to(attrs)
-    r1 = Relation.new(attrs, fds).bcnf_decomposition
+    fds1 = functional_dependency_set.related_to(attrs)
+    r1 = Relation.new(attrs, fds1).bcnf_decomposition
 
     attrs = (attributes - attrs + @bcnf_violating_fd.determinant).sort.uniq
-    fds = functional_dependency_set.related_to(attrs)
-    r2 = Relation.new(attrs, fds).bcnf_decomposition
+    fds2 = functional_dependency_set.related_to(attrs)
+    r2 = Relation.new(attrs, fds2).bcnf_decomposition
+
+    if preserve_dependencies && (fds1 + fds2).uniq.length < functional_dependency_set.functional_dependencies.length
+      raise DependencyPreservationError
+    end
 
     r1 + r2
   end
