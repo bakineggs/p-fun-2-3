@@ -1,4 +1,4 @@
-require 'spec'
+require 'rspec'
 require 'functional_dependency_set'
 
 describe FunctionalDependencySet do
