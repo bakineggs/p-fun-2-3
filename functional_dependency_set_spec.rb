@@ -25,28 +25,52 @@ describe FunctionalDependencySet do
   describe '#closure' do
     it 'is the complete set of functional dependencies implied by this set' do end
 
-    before :each do
-      @set = FunctionalDependencySet.new({
+    it 'includes the given functional dependencies' do
+      set = FunctionalDependencySet.new({
         ['A'] => ['B'],
-        ['B', 'C'] => ['D'],
-        ['D', 'E'] => ['F', 'G']
+        ['C'] => ['D']
+      })
+      set.closure.should == set
+    end
+
+    it 'includes transitively determined dependencies' do
+      FunctionalDependencySet.new({
+        ['A'] => ['B'],
+        ['B'] => ['C']
+      }).closure.should == FunctionalDependencySet.new({
+        ['A'] => ['B', 'C'],
+        ['B'] => ['C']
       })
     end
 
-    it 'always includes the attributes themselves' do
-      fail
-      @set.closure(['F', 'G']).should == ['F', 'G']
+    it 'includes reflexively determined dependencies' do
+      FunctionalDependencySet.new({
+        ['A'] => ['B', 'C'],
+        ['B'] => ['D']
+      }).closure.should == FunctionalDependencySet.new({
+        ['A'] => ['B', 'C', 'D'],
+        ['B'] => ['D']
+      })
     end
 
-    it 'includes directly determined attributes' do
-      fail
-      @set.closure(['A']).should == ['A', 'B']
+    it 'includes augmentally determined dependencies' do
+      FunctionalDependencySet.new({
+        ['A'] => ['B'],
+        ['B', 'C'] => ['D']
+      }).closure.should == FunctionalDependencySet.new({
+        ['A'] => ['B'],
+        ['B', 'C'] => ['D'],
+        ['A', 'C'] => ['B', 'D']
+      })
     end
 
-    it 'includes deductively determined attributes' do
-      fail
-      @set.closure(['A', 'C']).should == ['A', 'B', 'C', 'D']
-      @set.closure(['A', 'C', 'E']).should == ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    it 'eliminates redundant dependencies' do
+      FunctionalDependencySet.new({
+        ['A'] => ['B'],
+        ['A', 'B'] => ['C']
+      }).closure.should == FunctionalDependencySet.new({
+        ['A'] => ['B', 'C']
+      })
     end
   end
 

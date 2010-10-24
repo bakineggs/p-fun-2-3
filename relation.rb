@@ -5,7 +5,7 @@ class Relation
 
   def initialize attributes, fds = {}
     @attributes = attributes.sort.uniq
-    @functional_dependency_set = FunctionalDependencySet.new(fds)
+    @functional_dependency_set = FunctionalDependencySet.new(fds).closure
     @functional_dependency_set.functional_dependencies.each do |fd|
       if fd.determinant + fd.dependent - @attributes != []
         raise ArgumentError
@@ -16,11 +16,11 @@ class Relation
   def bcnf_decomposition preserve_dependencies = false
     return [self] unless violates_bcnf?
 
-    attrs = functional_dependency_set.closure(@bcnf_violating_fd.determinant)
+    attrs = @bcnf_violating_fd.determinant + @bcnf_violating_fd.dependent
     fds1 = functional_dependency_set.related_to(attrs)
     r1 = Relation.new(attrs, fds1).bcnf_decomposition
 
-    attrs = (attributes - attrs + @bcnf_violating_fd.determinant).sort.uniq
+    attrs = attributes - @bcnf_violating_fd.dependent
     fds2 = functional_dependency_set.related_to(attrs)
     r2 = Relation.new(attrs, fds2).bcnf_decomposition
 

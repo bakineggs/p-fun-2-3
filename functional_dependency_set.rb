@@ -9,25 +9,13 @@ class FunctionalDependencySet
     end
   end
 
-  def closure attributes
-    closure = attributes.sort.uniq
-
-    old = nil
-    until old == closure
-      old = closure
-      functional_dependencies.each do |fd|
-        if fd.determinant & closure == fd.determinant
-          closure = (closure + fd.dependent).sort.uniq
-        end
-      end
-    end
-
-    closure
+  def closure
+    self
   end
 
   def bcnf_violating_fd attributes
-    functional_dependencies.each do |fd|
-      if closure(fd.determinant) & attributes != attributes
+    closure.functional_dependencies.each do |fd|
+      if attributes & (fd.determinant + fd.dependent) != attributes
         return fd
       end
     end
