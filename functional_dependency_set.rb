@@ -10,7 +10,21 @@ class FunctionalDependencySet
   end
 
   def closure
-    self
+    set = Hash[functional_dependencies.map {|fd| [fd.determinant, fd.dependent]}]
+    old = nil
+
+    while set != old
+      old = set
+      old.each do |det1, dep1|
+        old.each do |det2, dep2|
+          if det2 & (det1 + dep1) == det2
+            set[det1] = (dep1 + dep2 - det1).sort.uniq
+          end
+        end
+      end
+    end
+
+    FunctionalDependencySet.new set
   end
 
   def bcnf_violating_fd attributes
