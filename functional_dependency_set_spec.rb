@@ -23,7 +23,7 @@ describe FunctionalDependencySet do
   end
 
   describe '#closure' do
-    it 'is the set of attributes functionally determined by the given attributes' do end
+    it 'is the complete set of functional dependencies implied by this set' do end
 
     before :each do
       @set = FunctionalDependencySet.new({
@@ -34,16 +34,29 @@ describe FunctionalDependencySet do
     end
 
     it 'always includes the attributes themselves' do
+      fail
       @set.closure(['F', 'G']).should == ['F', 'G']
     end
 
     it 'includes directly determined attributes' do
+      fail
       @set.closure(['A']).should == ['A', 'B']
     end
 
     it 'includes deductively determined attributes' do
+      fail
       @set.closure(['A', 'C']).should == ['A', 'B', 'C', 'D']
       @set.closure(['A', 'C', 'E']).should == ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    end
+  end
+
+  describe '#to_s' do
+    it 'lists the functional dependencies' do
+      set = FunctionalDependencySet.new({['A'] => ['B'], ['B', 'C'] => ['D']})
+      [
+        'A -> B, BC -> D',
+        'BC -> D, A -> B'
+      ].include?(set.to_s).should be_true
     end
   end
 

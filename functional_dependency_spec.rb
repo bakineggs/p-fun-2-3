@@ -28,6 +28,19 @@ describe FunctionalDependency do
     end
   end
 
+  describe '#to_s' do
+    it 'lists the determinants and dependents' do
+      fd = FunctionalDependency.new ['A'], ['B']
+      fd.to_s.should == 'A -> B'
+
+      fd = FunctionalDependency.new ['A', 'B'], ['C']
+      fd.to_s.should == 'AB -> C'
+
+      fd = FunctionalDependency.new ['A'], ['B', 'C']
+      fd.to_s.should == 'A -> BC'
+    end
+  end
+
   describe '#==' do
     it 'determines equality based on the attributes' do
       fd = FunctionalDependency.new ['A'], ['B']

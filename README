@@ -1,0 +1,61 @@
+BCNF Decomposition & FD Closure Demo
+
+To use, run the command "irb -r relation.rb" (requires ruby).
+This will open an interactive ruby prompt.
+
+Determining the Closure of a Set of Functional Dependencies:
+  see functional_dependency_set_spec.rb for more info
+
+  1) Create a FunctionalDependencySet. The constructor takes a hash
+     representing the functional dependencies with the keys being
+     determinants and the values being dependants. Both are represented
+     as an array of strings.
+
+    >> s = FunctionalDependencySet.new({
+    ?>   ['A'] => ['B'],
+    ?>   ['B'] => ['C'],
+    ?>   ['B', 'C'] => ['D']
+    >> })
+
+    returns
+    => #<FunctionalDependencySet ...>
+
+  2) Call the closure method.
+
+    >> c = s.closure
+
+    returns
+    => #<FunctionalDependencySet ...>
+
+  3) Print the result.
+
+    >> puts c
+
+    outputs
+      A -> BCD, B -> CD
+
+Determining the BCNF Decomposition of a Relation:
+  see relation_spec.rb for more info
+
+  1) Create a Relation. The constructor takes an array of attributes and
+     a hash representing the functional dependencies.
+
+    >> r = Relation.new(['A', 'B', 'C'], {['A'] => ['B']})
+
+    returns
+    => #<Relation ...>
+
+  2) Call the bcnf_decomposition method.
+
+    >> d = r.bcnf_decomposition
+
+    returns
+    => [#<Relation ...>, ...]
+
+  3) Print the result.
+
+    >> puts d
+
+    outputs
+      (A, B), A -> B
+      (A, C)

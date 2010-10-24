@@ -43,6 +43,10 @@ class FunctionalDependencySet
     end
   end
 
+  def to_s
+    functional_dependencies.map(&:to_s).join(', ')
+  end
+
   def == other
     return false unless other.is_a?(FunctionalDependencySet)
     functional_dependencies == other.functional_dependencies

@@ -36,6 +36,16 @@ class Relation
     @bcnf_violating_fd != nil
   end
 
+  def to_s
+    fds = functional_dependency_set.to_s
+    attrs = "(#{attributes.join(', ')})"
+    if fds == ''
+      attrs
+    else
+      "#{attrs}, #{fds}"
+    end
+  end
+
   def == other
     return false unless other.is_a?(Relation)
     attributes == other.attributes && functional_dependency_set == other.functional_dependency_set

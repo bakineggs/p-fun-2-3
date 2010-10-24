@@ -80,6 +80,21 @@ describe Relation do
     end
   end
 
+  describe '#to_s' do
+    it 'includes the attributes and functional dependencies' do
+      r = Relation.new ['A', 'B', 'C'], {['A'] => ['B'], ['C'] => ['B']}
+      [
+        '(A, B, C), A -> B, C -> B',
+        '(A, B, C), C -> B, A -> B'
+      ].include?(r.to_s).should be_true
+    end
+
+    it 'doesn\'t include functional dependencies if it doesn\'t have any' do
+      r = Relation.new ['A', 'B', 'C']
+      r.to_s.should == '(A, B, C)'
+    end
+  end
+
   describe '#==' do
     it 'determines equality based on attributes and functional dependencies' do
       r = Relation.new ['A', 'B', 'C'], {['A'] => ['B']}
