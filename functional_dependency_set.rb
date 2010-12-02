@@ -60,7 +60,7 @@ class FunctionalDependencySet
       if attributes & (fd.determinant + fd.dependent) != attributes
         if after_fd.nil?
           return fd
-        elsif after_fd == fd
+        elsif after_fd.determinant == fd.determinant
           after_fd = nil
         end
       end
