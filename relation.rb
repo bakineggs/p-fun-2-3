@@ -5,7 +5,7 @@ class Relation
 
   def initialize attributes, fds = {}
     @attributes = attributes.sort.uniq
-    @functional_dependency_set = FunctionalDependencySet.new(fds).closure
+    @functional_dependency_set = FunctionalDependencySet.new(fds)
     @functional_dependency_set.functional_dependencies.each do |fd|
       if fd.determinant + fd.dependent - @attributes != []
         raise ArgumentError
@@ -14,7 +14,15 @@ class Relation
   end
 
   def bcnf_decomposition preserve_dependencies = false
-    return [self] unless violates_bcnf?
+    @bcnf_decomposition ||= {}
+
+    if @bcnf_decomposition[preserve_dependencies]
+      return @bcnf_decomposition[preserve_dependencies]
+    end
+
+    unless violates_bcnf?
+      return @bcnf_decomposition[preserve_dependencies] = [self]
+    end
 
     attrs = @bcnf_violating_fd.determinant + @bcnf_violating_fd.dependent
     fds1 = functional_dependency_set.related_to(attrs)
@@ -28,14 +36,23 @@ class Relation
                                functional_dependency_set.functional_dependencies.length
 
     if preserve_dependencies && !preserved_dependencies
-      raise DependencyPreservationError
+      if has_another_bcnf_violating_fd?
+        return bcnf_decomposition(true)
+      else
+        raise DependencyPreservationError
+      end
     end
 
-    r1 + r2
+    @bcnf_decomposition[preserve_dependencies] = r1 + r2
   end
 
   def violates_bcnf?
-    @bcnf_violating_fd = functional_dependency_set.bcnf_violating_fd(attributes)
+    @bcnf_violating_fd ||= functional_dependency_set.bcnf_violating_fd(attributes)
+    @bcnf_violating_fd != nil
+  end
+
+  def has_another_bcnf_violating_fd?
+    @bcnf_violating_fd = functional_dependency_set.bcnf_violating_fd(attributes, @bcnf_violating_fd)
     @bcnf_violating_fd != nil
   end
 

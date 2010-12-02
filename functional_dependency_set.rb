@@ -10,6 +10,8 @@ class FunctionalDependencySet
   end
 
   def closure
+    return @closure if @closure
+
     set = Hash[functional_dependencies.map {|fd| [fd.determinant, fd.dependent]}]
     old = nil
     while set != old
@@ -50,13 +52,17 @@ class FunctionalDependencySet
       end
     end
 
-    FunctionalDependencySet.new set
+    @closure = FunctionalDependencySet.new set
   end
 
-  def bcnf_violating_fd attributes
+  def bcnf_violating_fd attributes, after_fd = nil
     closure.functional_dependencies.each do |fd|
       if attributes & (fd.determinant + fd.dependent) != attributes
-        return fd
+        if after_fd.nil?
+          return fd
+        elsif after_fd == fd
+          after_fd = nil
+        end
       end
     end
 

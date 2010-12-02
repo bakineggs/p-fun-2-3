@@ -75,8 +75,23 @@ describe Relation do
       }.should_not raise_error
     end
 
-    it 'decomposes a functional dependency that preserve dependencies if possible' do
-      pending
+    it 'will find a way to preserve dependencies if it can' do
+      r = Relation.new ['A', 'B', 'C', 'D'], {
+        ['A'] => ['B', 'C'],
+        ['B'] => ['D'],
+        ['D'] => ['B']
+      }
+
+      # sanity check to ensure our test case has to find a new FD to decompose on
+      r.bcnf_decomposition.map do |r1|
+        r1.functional_dependency_set.functional_dependencies
+      end.flatten.uniq.length.should <
+        r.functional_dependency_set.functional_dependencies.length
+
+      r.bcnf_decomposition(true).map do |r1|
+        r1.functional_dependency_set.functional_dependencies
+      end.flatten.uniq.length.should ==
+        r.functional_dependency_set.functional_dependencies.length
     end
   end
 
