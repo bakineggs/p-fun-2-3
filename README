@@ -1,7 +1,13 @@
 BCNF Decomposition & FD Closure Demo
 
+--------------------------------------------------------------------------------
+
 To use, run the command "irb -r relation.rb" (requires ruby).
 This will open an interactive ruby prompt.
+
+To run unit tests, run the command "rspec *_spec.rb" (requires ruby and rspec).
+
+--------------------------------------------------------------------------------
 
 Determining the Closure of a Set of Functional Dependencies:
   see functional_dependency_set_spec.rb for more info
@@ -33,6 +39,8 @@ Determining the Closure of a Set of Functional Dependencies:
 
     outputs
       A -> BCD, B -> CD
+
+--------------------------------------------------------------------------------
 
 Determining the BCNF Decomposition of a Relation:
   see relation_spec.rb for more info
