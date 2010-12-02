@@ -24,7 +24,10 @@ class Relation
     fds2 = functional_dependency_set.related_to(attrs)
     r2 = Relation.new(attrs, fds2).bcnf_decomposition
 
-    if preserve_dependencies && (fds1 + fds2).uniq.length < functional_dependency_set.functional_dependencies.length
+    preserved_dependencies = (fds1 + fds2).uniq.length ==
+                               functional_dependency_set.functional_dependencies.length
+
+    if preserve_dependencies && !preserved_dependencies
       raise DependencyPreservationError
     end
 
