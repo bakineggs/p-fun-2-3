@@ -1,5 +1,6 @@
 require 'mongrel'
 require 'json'
+require 'cgi'
 require 'relation'
 
 def run
@@ -27,16 +28,28 @@ class BCNFDecomposer < Mongrel::HttpHandler
 
       attributes = parse_attributes params['attributes']
       fds = parse_functional_dependencies params['functional_dependencies']
+      preserve_dependencies = params['preserve_dependencies'] == 'on'
 
       relation = Relation.new attributes, fds
-      decomposition = relation.bcnf_decomposition
+      decomposition = relation.bcnf_decomposition preserve_dependencies
 
       response.start 200 do |head, out|
         output = File.read 'html/bcnf.html'
-        output.sub! '%%%Relation%%%', relation.to_s
-        output.sub! '%%%BCNF%%%', decomposition.map(&:to_s).join("\n")
-        output.sub! '%%%attributes%%%', params['attributes']
-        output.sub! '%%%functional_dependencies%%%', params['functional_dependencies']
+        output.sub! '%%%Relation%%%', CGI.escapeHTML(relation.to_s)
+        output.sub! '%%%BCNF%%%', CGI.escapeHTML(decomposition.map(&:to_s).join("\n"))
+        output.sub! '%%%attributes%%%', CGI.escapeHTML(params['attributes'])
+        output.sub! '%%%functional_dependencies%%%', CGI.escapeHTML(params['functional_dependencies'])
+        output.sub! '%%%preserve_dependencies%%%', preserve_dependencies ? 'checked="checked" ' : ''
+        out.write output
+      end
+    rescue DependencyPreservationError
+      response.start 200 do |head, out|
+        output = File.read 'html/bcnf.html'
+        output.sub! '%%%Relation%%%', CGI.escapeHTML(relation.to_s)
+        output.sub! '%%%BCNF%%%', 'Could not decompose due to a dependency preservation error'
+        output.sub! '%%%attributes%%%', CGI.escapeHTML(params['attributes'])
+        output.sub! '%%%functional_dependencies%%%', CGI.escapeHTML(params['functional_dependencies'])
+        output.sub! '%%%preserve_dependencies%%%', preserve_dependencies ? 'checked="checked" ' : ''
         out.write output
       end
     rescue
@@ -59,9 +72,9 @@ class ClosureGenerator < Mongrel::HttpHandler
 
       response.start 200 do |head, out|
         output = File.read 'html/closure.html'
-        output.sub! '%%%Set%%%', set.to_s
-        output.sub! '%%%Closure%%%', closure.to_s
-        output.sub! '%%%functional_dependencies%%%', params['functional_dependencies']
+        output.sub! '%%%Set%%%', CGI.escapeHTML(set.to_s)
+        output.sub! '%%%Closure%%%', CGI.escapeHTML(closure.to_s)
+        output.sub! '%%%functional_dependencies%%%', CGI.escapeHTML(params['functional_dependencies'])
         out.write output
       end
     rescue
