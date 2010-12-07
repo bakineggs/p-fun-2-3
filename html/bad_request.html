@@ -13,14 +13,28 @@
     <h2>Perform a BCNF Decomposition</h2>
     <form method="post" action="/bcnf">
       <dl>
-        <dt>Attributes</dt>
-        <dd><input type="text" name="attributes" /></dd>
+        <dt class="attributes">Attributes</dt>
+        <dd class="attributes">
+          <input type="text" name="attributes" />
+          <p class="instructions">
+            This should be a comma-separated list of identifiers. Example: <pre>A, B, C, D</pre>. Due to the way I parse this, you can't use single quotes, double quotes, or commas in attribute names.
+          </p>
+        </dd>
 
-        <dt>Functional Dependencies</dt>
-        <dd><textarea name="functional_dependencies"></textarea></dd>
+        <dt class="functional_dependencies">Functional Dependencies</dt>
+        <dd class="functional_dependencies">
+          <textarea name="functional_dependencies"></textarea>
+          <p class="instructions">
+            This should be a hash with the keys as determinants and the values as dependants. Both are represented as arrays of strings. Example: <pre>{
+  ['A'] =&gt; ['B'],
+  ['B'] =&gt; ['C'],
+  ['B', 'C'] =&gt; ['D']
+}</pre>
+          </p>
+        </dd>
 
-        <dt>Preserve Dependencies</dt>
-        <dd><input type="checkbox" name="preserve_dependencies" /></dd>
+        <dt class="preserve_dependencies">Preserve Dependencies</dt>
+        <dd class="preserve_dependencies"><input type="checkbox" name="preserve_dependencies" /></dd>
       </dl>
       <input type="submit" value="Decompose" />
     </form>
@@ -28,8 +42,17 @@
     <h2>Functional Dependency Set Closure</h2>
     <form method="post" action="/closure">
       <dl>
-        <dt>Functional Dependencies</dt>
-        <dd><textarea name="functional_dependencies"></textarea></dd>
+        <dt class="functional_dependencies">Functional Dependencies</dt>
+        <dd class="functional_dependencies">
+          <textarea name="functional_dependencies"></textarea>
+          <p class="instructions">
+            This should be a hash with the keys as determinants and the values as dependants. Both are represented as arrays of strings. Example: <pre>{
+  ['A'] =&gt; ['B'],
+  ['B'] =&gt; ['C'],
+  ['B', 'C'] =&gt; ['D']
+}</pre>
+          </p>
+        </dd>
       </dl>
       <input type="submit" value="Calculate Closure" />
     </form>
