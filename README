@@ -7,6 +7,10 @@ This will open an interactive ruby prompt.
 
 To run unit tests, run the command "rspec *_spec.rb" (requires ruby and rspec).
 
+To run the web frontend, run the command "ruby -r rubygems web_server.rb"
+  (this requires ruby, rubygems, mongrel, JSON, and CGI).
+The web server will be started on http://localhost:3000.
+
 --------------------------------------------------------------------------------
 
 Determining the Closure of a Set of Functional Dependencies:
