@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>
+      BCNF Decomposition & FD Closure Demo
+    </title>
+  </head>
+  <body>
+    <h1>BCNF Decomposition & FD Closure Demo</h1>
+
+    <h2>Perform a BCNF Decomposition</h2>
+    <form method="post" action="/bcnf">
+      <dl>
+        <dt>Attributes</dt>
+        <dd><input type="text" name="attributes" /></dd>
+
+        <dt>Functional Dependencies</dt>
+        <dd><textarea name="functional_dependencies"></textarea></dd>
+      </dl>
+      <input type="submit" value="Decompose" />
+    </form>
+
+    <h2>Functional Dependency Set Closure</h2>
+    <form method="post" action="/closure">
+      <dl>
+        <dt>Functional Dependencies</dt>
+        <dd><textarea name="functional_dependencies"></textarea></dd>
+      </dl>
+      <input type="submit" value="Calculate Closure" />
+    </form>
+  </body>
+</html>

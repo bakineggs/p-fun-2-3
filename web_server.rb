@@ -15,7 +15,7 @@ end
 class RootHandler < Mongrel::HttpHandler
   def process request, response
     response.start 200 do |head, out|
-      out.write File.read('html/index.html')
+      out.write File.read('html/root.html')
     end
   end
 end
@@ -23,8 +23,10 @@ end
 class BCNFDecomposer < Mongrel::HttpHandler
   def process request, response
     begin
-      attributes = JSON.parse request.params['attributes']
-      fds = parse_functional_dependencies request.params['functional_dependencies']
+      params = request.class.query_parse request.body.read
+
+      attributes = parse_attributes params['attributes']
+      fds = parse_functional_dependencies params['functional_dependencies']
 
       relation = Relation.new attributes, fds
       decomposition = relation.bcnf_decomposition
@@ -33,6 +35,8 @@ class BCNFDecomposer < Mongrel::HttpHandler
         output = File.read 'html/bcnf.html'
         output.sub! '%%%Relation%%%', relation.to_s
         output.sub! '%%%BCNF%%%', decomposition.map(&:to_s).join("\n")
+        output.sub! '%%%attributes%%%', params['attributes']
+        output.sub! '%%%functional_dependencies%%%', params['functional_dependencies']
         out.write output
       end
     rescue
@@ -46,7 +50,9 @@ end
 class ClosureGenerator < Mongrel::HttpHandler
   def process request, response
     begin
-      fds = parse_functional_dependencies request.params['functional_dependencies']
+      params = request.class.query_parse request.body.read
+
+      fds = parse_functional_dependencies params['functional_dependencies']
 
       set = FunctionalDependencySet.new fds
       closure = set.closure
@@ -55,6 +61,7 @@ class ClosureGenerator < Mongrel::HttpHandler
         output = File.read 'html/closure.html'
         output.sub! '%%%Set%%%', set.to_s
         output.sub! '%%%Closure%%%', closure.to_s
+        output.sub! '%%%functional_dependencies%%%', params['functional_dependencies']
         out.write output
       end
     rescue
@@ -65,10 +72,21 @@ class ClosureGenerator < Mongrel::HttpHandler
   end
 end
 
+def parse_attributes str
+  str.gsub! /'([^'"]*)'/, '"\1"'
+  str = "[#{str}" unless str.chars.first == '['
+  str += ']' unless str.chars.entries.last == ']'
+  raise unless str.match /^\s*\[\s*"[^"]*"(\s*,\s*"[^"]*")*\s*\]\s*$/
+  JSON.parse str
+end
+
 def parse_functional_dependencies str
-  str.gsub! /(\[[^\]]*\])=>(\[[^\]]*\])/, '[\1, \2]'
+  str.gsub! /(\[[^\]]*\])\s*=>\s*(\[[^\]]*\])/, '[\1, \2]'
+  str.gsub! /\['([^'"]*)'\]/, '["\1"]'
   str.sub! /^\{/, '['
   str.sub! /\}$/, ']'
+  raise unless str.match /^\s*\[\s*\[\s*"[^"]*"\s*\](\s*,\s*\[\s*"[^"]*"\s*\])*\s*\](\s*,\s*\[\s*\[\s*"[^"]*"\s*\](\s*,\s*\[\s*"[^"]*"\s*\])*\s*\])*\s*$/
+  JSON.parse str
 end
 
 run
