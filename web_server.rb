@@ -86,7 +86,10 @@ class ClosureGenerator < Mongrel::HttpHandler
 end
 
 def parse_attributes str
+  str = str.clone
   str.gsub! /'([^'"]*)'/, '"\1"'
+  str.gsub! /(^|,\s*)([^",]*)(\s*,|$)/, '\1"\2"\3'
+  str.gsub! /(^|,\s*)([^",]*)(\s*,|$)/, '\1"\2"\3'
   str = "[#{str}" unless str.chars.first == '['
   str += ']' unless str.chars.entries.last == ']'
   raise unless str.match /^\s*\[\s*"[^"]*"(\s*,\s*"[^"]*")*\s*\]\s*$/
@@ -94,11 +97,12 @@ def parse_attributes str
 end
 
 def parse_functional_dependencies str
+  str = str.clone
   str.gsub! /(\[[^\]]*\])\s*=>\s*(\[[^\]]*\])/, '[\1, \2]'
   str.gsub! /\['([^'"]*)'\]/, '["\1"]'
-  str.sub! /^\{/, '['
-  str.sub! /\}$/, ']'
-  raise unless str.match /^\s*\[\s*\[\s*"[^"]*"\s*\](\s*,\s*\[\s*"[^"]*"\s*\])*\s*\](\s*,\s*\[\s*\[\s*"[^"]*"\s*\](\s*,\s*\[\s*"[^"]*"\s*\])*\s*\])*\s*$/
+  str.sub! /^\s*\{/, '['
+  str.sub! /\}\s*$/, ']'
+  raise unless str.match /^\s*\[\s*\[\s*"[^"]*"\s*\](\s*,\s*\[\s*"[^"]*"\s*\])*\s*\](\s*,\s*\[\s*\[\s*"[^"]*"\s*\](\s*,\s*\[\s*"[^"]*"\s*\])*\s*\])*\s*\]\s*$/
   JSON.parse str
 end
 
