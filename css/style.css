@@ -1,18 +1,25 @@
 dl {
-  width: 600px;
+  width: 800px;
 }
 
 dl dt {
   clear: both;
+  margin-top: 10px;
+  padding-top: 10px;
 }
 
-dl dd > *:not(.instructions) {
+dl dd > input[type=text], dl dd > textarea {
   width: 200px;
+}
+
+dl dd > textarea {
+  height: 10em;
 }
 
 .instructions {
   float: right;
-  width: 350px;
+  width: 550px;
+  margin-bottom: 10px;
 }
 
 .attributes .instructions pre {

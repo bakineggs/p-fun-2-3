@@ -41,9 +41,16 @@
         </dd>
 
         <dt class="preserve_dependencies">Preserve Dependencies</dt>
-        <dd class="preserve_dependencies"><input type="checkbox" name="preserve_dependencies" %%%preserve_dependencies%%%/></dd>
+        <dd class="preserve_dependencies">
+          <input type="checkbox" name="preserve_dependencies" %%%preserve_dependencies%%%/>
+          <div class="instructions">
+            If checked, we will try to decompose on a functional dependency that will preserve dependencies. If the box is checked and we can not decompose this relation while preserving dependencies, an error will be given. If the box is unchecked, dependency preservation will not be taken into consideration at all.
+          </div>
+        </dd>
+
+        <dt class="decompose">Decompose</dt>
+        <dd class="decompose"><input type="submit" value="Decompose" /></dd>
       </dl>
-      <input type="submit" value="Decompose" />
     </form>
 
     <h2>Functional Dependency Set Closure</h2>
@@ -60,8 +67,10 @@
 }</pre>
           </div>
         </dd>
+
+        <dt class="calculate">Calculate Closure</dt>
+        <dd class="calculate"><input type="submit" value="Calculate Closure" /></dd>
       </dl>
-      <input type="submit" value="Calculate Closure" />
     </form>
   </body>
 </html>
