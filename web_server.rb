@@ -9,6 +9,7 @@ def run
   server.register '/', RootHandler.new
   server.register '/bcnf', BCNFDecomposer.new
   server.register '/closure', ClosureGenerator.new
+  server.register '/css', Mongrel::DirHandler.new('css')
 
   server.run.join
 end

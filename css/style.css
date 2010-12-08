@@ -1,0 +1,20 @@
+dl {
+  width: 600px;
+}
+
+dl dt {
+  clear: both;
+}
+
+dl dd > *:not(.instructions) {
+  width: 200px;
+}
+
+.instructions {
+  float: right;
+  width: 350px;
+}
+
+.attributes .instructions pre {
+  display: inline;
+}

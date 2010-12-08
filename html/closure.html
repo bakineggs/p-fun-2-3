@@ -3,6 +3,7 @@
     <title>
       BCNF Decomposition & FD Closure Demo
     </title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
   </head>
   <body>
     <h1>BCNF Decomposition & FD Closure Demo</h1>
@@ -22,21 +23,21 @@
         <dt class="attributes">Attributes</dt>
         <dd class="attributes">
           <input type="text" name="attributes" />
-          <p class="instructions">
+          <div class="instructions">
             This should be a comma-separated list of identifiers. Example: <pre>A, B, C, D</pre>. Due to the way I parse this, you can't use single quotes, double quotes, or commas in attribute names.
-          </p>
+          </div>
         </dd>
 
         <dt class="functional_dependencies">Functional Dependencies</dt>
         <dd class="functional_dependencies">
           <textarea name="functional_dependencies"></textarea>
-          <p class="instructions">
+          <div class="instructions">
             This should be a hash with the keys as determinants and the values as dependants. Both are represented as arrays of strings. Example: <pre>{
   ['A'] =&gt; ['B'],
   ['B'] =&gt; ['C'],
   ['B', 'C'] =&gt; ['D']
 }</pre>
-          </p>
+          </div>
         </dd>
 
         <dt class="preserve_dependencies">Preserve Dependencies</dt>
@@ -51,13 +52,13 @@
         <dt class="functional_dependencies">Functional Dependencies</dt>
         <dd class="functional_dependencies">
           <textarea name="functional_dependencies">%%%functional_dependencies%%%</textarea>
-          <p class="instructions">
+          <div class="instructions">
             This should be a hash with the keys as determinants and the values as dependants. Both are represented as arrays of strings. Example: <pre>{
   ['A'] =&gt; ['B'],
   ['B'] =&gt; ['C'],
   ['B', 'C'] =&gt; ['D']
 }</pre>
-          </p>
+          </div>
         </dd>
       </dl>
       <input type="submit" value="Calculate Closure" />
