@@ -33,6 +33,15 @@ describe FunctionalDependencySet do
       set.closure.should == set
     end
 
+    it 'combines dependents' do
+      FunctionalDependencySet.new({
+        ['A'] => ['B'],
+        ['A'] => ['C']
+      }).closure.should == FunctionalDependencySet.new({
+        ['A'] => ['B', 'C'],
+      })
+    end
+
     it 'includes transitively determined dependencies' do
       FunctionalDependencySet.new({
         ['A'] => ['B'],
