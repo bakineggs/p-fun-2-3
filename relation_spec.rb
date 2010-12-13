@@ -50,6 +50,14 @@ describe Relation do
       ]
     end
 
+    it 'splits up the dependents of functional dependencies when attributes get split' do
+      r = Relation.new ['A', 'B', 'C'], {['A'] => ['B'], ['C'] => ['A', 'B']}
+      r.bcnf_decomposition.sort_by(&:attributes).should == [
+        Relation.new(['A', 'B'], {['A'] => ['B']}),
+        Relation.new(['A', 'C'], {['C'] => ['A']})
+      ]
+    end
+
     it 'does not preserve dependencies by default' do
       r = Relation.new ['A', 'B', 'C'], {['A'] => ['C'], ['B'] => ['C']}
       [
