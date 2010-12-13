@@ -87,8 +87,8 @@ describe FunctionalDependencySet do
     it 'lists the functional dependencies' do
       set = FunctionalDependencySet.new({['A'] => ['B'], ['B', 'C'] => ['D']})
       [
-        'A -> B, BC -> D',
-        'BC -> D, A -> B'
+        'A -> B ; B, C -> D',
+        'B, C -> D ; A -> B'
       ].include?(set.to_s).should be_true
     end
   end

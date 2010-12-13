@@ -7,7 +7,7 @@ class FunctionalDependency
   end
 
   def to_s
-    "#{determinant.join('')} -> #{dependent.join('')}"
+    "#{determinant.join(', ')} -> #{dependent.join(', ')}"
   end
 
   def == other

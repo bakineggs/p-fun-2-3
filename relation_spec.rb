@@ -107,8 +107,8 @@ describe Relation do
     it 'includes the attributes and functional dependencies' do
       r = Relation.new ['A', 'B', 'C'], {['A'] => ['B'], ['C'] => ['B']}
       [
-        '(A, B, C), A -> B, C -> B',
-        '(A, B, C), C -> B, A -> B'
+        '(A, B, C) ; A -> B ; C -> B',
+        '(A, B, C) ; C -> B ; A -> B'
       ].include?(r.to_s).should be_true
     end
 

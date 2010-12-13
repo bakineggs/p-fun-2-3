@@ -62,7 +62,7 @@ class Relation
     if fds == ''
       attrs
     else
-      "#{attrs}, #{fds}"
+      "#{attrs} ; #{fds}"
     end
   end
 

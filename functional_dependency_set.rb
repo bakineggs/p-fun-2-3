@@ -78,7 +78,7 @@ class FunctionalDependencySet
   end
 
   def to_s
-    functional_dependencies.map(&:to_s).join(', ')
+    functional_dependencies.map(&:to_s).join(' ; ')
   end
 
   def == other

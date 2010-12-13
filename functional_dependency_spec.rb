@@ -34,10 +34,10 @@ describe FunctionalDependency do
       fd.to_s.should == 'A -> B'
 
       fd = FunctionalDependency.new ['A', 'B'], ['C']
-      fd.to_s.should == 'AB -> C'
+      fd.to_s.should == 'A, B -> C'
 
       fd = FunctionalDependency.new ['A'], ['B', 'C']
-      fd.to_s.should == 'A -> BC'
+      fd.to_s.should == 'A -> B, C'
     end
   end
 
