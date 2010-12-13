@@ -84,8 +84,8 @@ describe Relation do
     end
 
     it 'will find a way to preserve dependencies if it can' do
-      r = Relation.new ['A', 'B', 'C', 'D'], {
-        ['A'] => ['B', 'C'],
+      r = Relation.new ['A', 'B', 'D'], {
+        ['A'] => ['B'],
         ['B'] => ['D'],
         ['D'] => ['B']
       }

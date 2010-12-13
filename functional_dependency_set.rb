@@ -77,9 +77,10 @@ class FunctionalDependencySet
 
   def related_to attributes
     fds = functional_dependencies.select do |fd|
-      fd.determinant + fd.dependent - attributes == []
+      (fd.determinant - attributes).empty? &&
+        !(fd.dependent & attributes).empty?
     end.map do |fd|
-      [fd.determinant, fd.dependent]
+      [fd.determinant, fd.dependent & attributes]
     end
   end
 
