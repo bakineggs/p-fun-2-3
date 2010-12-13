@@ -34,10 +34,10 @@ describe FunctionalDependencySet do
     end
 
     it 'combines dependents' do
-      FunctionalDependencySet.new({
-        ['A'] => ['B'],
-        ['A'] => ['C']
-      }).closure.should == FunctionalDependencySet.new({
+      FunctionalDependencySet.new([
+        [['A'], ['B']],
+        [['A'], ['C']]
+      ]).closure.should == FunctionalDependencySet.new({
         ['A'] => ['B', 'C'],
       })
     end

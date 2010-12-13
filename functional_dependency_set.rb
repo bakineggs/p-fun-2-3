@@ -12,7 +12,13 @@ class FunctionalDependencySet
   def closure
     return @closure if @closure
 
-    set = Hash[functional_dependencies.map {|fd| [fd.determinant, fd.dependent]}]
+    set = {}
+    functional_dependencies.each do |fd|
+      set[fd.determinant] ||= []
+      set[fd.determinant] += fd.dependent
+      set[fd.determinant].uniq!
+    end
+
     old = nil
     while set != old
       old = set.clone
