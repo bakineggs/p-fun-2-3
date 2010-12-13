@@ -42,7 +42,7 @@ Determining the Closure of a Set of Functional Dependencies:
     >> puts c
 
     outputs
-      A -> BCD, B -> CD
+      A -> B, C, D ; B -> C, D
 
 --------------------------------------------------------------------------------
 
